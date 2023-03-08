@@ -1,6 +1,13 @@
 function app() {
 
+    // center portion of the page where mobiles are listed
     this.listing = document.getElementById('listing');
+
+    // filters on the left panel
+    this.name = document.getElementsByClassName('text-input');
+    this.select = document.getElementsByTagName('select');
+    this.checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
     this.items = [
         {
             name: 'Apple iPhone 11',
@@ -40,12 +47,30 @@ app.prototype.render = function () {
                     INR ${price}
                 </h3>
             </div>`;
-        
+
         const div = document.createElement('div');
         div.innerHTML = template;
         this.listing.appendChild(div);
     })
 }
 
+app.prototype.bindEvents = function () {
+    this.name[0].addEventListener('change', (event) => {
+        console.log(event.target.value);
+    });
+
+    this.select[0].addEventListener('change', (event) => {
+        console.log(event.target.value);
+    });
+
+    this.checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener('click', (event) => {
+            console.log(event.target.value);
+        })
+    });
+
+}
+
 const instance = new app();
 instance.render();
+instance.bindEvents();
