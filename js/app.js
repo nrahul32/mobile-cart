@@ -28,6 +28,8 @@ function app() {
             brand: 'samsung'
         }
     ]
+
+    this.filters = {}
 }
 
 app.prototype.render = function () {
@@ -56,16 +58,22 @@ app.prototype.render = function () {
 
 app.prototype.bindEvents = function () {
     this.name[0].addEventListener('change', (event) => {
-        console.log(event.target.value);
+        this.filters.name = event.target.value
+        console.log(this.filters.name);
     });
 
     this.select[0].addEventListener('change', (event) => {
-        console.log(event.target.value);
+        this.filters.select = event.target.value
+        console.log(this.filters.select);
     });
 
     this.checkboxes.forEach((checkbox) => {
         checkbox.addEventListener('click', (event) => {
-            console.log(event.target.value);
+            if( !this.filters.checkboxes ) {
+                this.filters.checkboxes = [];
+            }
+            this.filters.checkboxes.push(event.target.value)
+            console.log(this.filters.checkboxes);
         })
     });
 
