@@ -14,7 +14,7 @@ function app() {
             rom: '128GB',
             ram: '2GB',
             color: 'Black',
-            price: 50000,
+            price: 51000,
             imageUrl: 'images/sample-mobile.webp',
             brand: 'Apple'
         },
@@ -58,6 +58,33 @@ app.prototype.render = function () {
 }
 
 app.prototype.filterResults = function() {
+    const range = {
+        '0': {
+            min: 0,
+            max: 10000
+        },
+        '1': {
+            min: 10000,
+            max: 20000
+        },
+        '2': {
+            min: 20000,
+            max: 30000
+        },
+        '3': {
+            min: 30000,
+            max: 40000
+        },
+        '4': {
+            min: 40000,
+            max: 50000
+        },
+        '5': {
+            min: 50000,
+            max: Number.MAX_SAFE_INTEGER
+        },
+    }
+
     this.filteredItems = this.items.filter((item) => {
         let show = false;
         if(this.filters.name && (item.name.toLowerCase().includes(this.filters.name.toLowerCase()) || item.brand.toLowerCase().includes(this.filters.name.toLowerCase()))) {
@@ -65,6 +92,17 @@ app.prototype.filterResults = function() {
         }
         if(!show && this.filters.brand && item.brand.toLowerCase().includes(this.filters.brand.toLowerCase())) {
             show = true;
+        }
+        if(!show && this.filters.checkboxes && this.filters.checkboxes.length > 0) {
+            const limits = this.filters.checkboxes.map((p) => {
+                return range[p];
+            })
+            let matchingFilters = limits.filter((check) => {
+                return item.price >= check.min && item.price <= check.max
+            })
+            if (matchingFilters.length != 0) {
+                show = true;
+            }
         }
         return show;
     })
@@ -90,6 +128,7 @@ app.prototype.bindEvents = function () {
                 this.filters.checkboxes = [];
             }
             this.filters.checkboxes.push(event.target.value);
+            this.filterResults();
             console.log(this.filters.checkboxes);
         })
     });
