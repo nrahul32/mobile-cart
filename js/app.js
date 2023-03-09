@@ -127,7 +127,21 @@ app.prototype.bindEvents = function () {
             if( !this.filters.checkboxes ) {
                 this.filters.checkboxes = [];
             }
-            this.filters.checkboxes.push(event.target.value);
+            // check if the entry already exists (unchecking action)
+            let index = this.filters.checkboxes.indexOf(event.target.value)
+            if(index == -1) {
+                // add the entry if the action was check
+                this.filters.checkboxes.push(event.target.value);
+            } else {
+                // remove the entry if the action was uncheck
+                this.filters.checkboxes.splice(index, 1);
+            }
+            // if none of the checkboxes are checked, show all results
+            if(this.filters.checkboxes.length == 0) {
+                this.filteredItems = this.items;
+                this.render();
+                return;
+            }
             this.filterResults();
             console.log(this.filters.checkboxes);
         })
