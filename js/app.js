@@ -10,13 +10,13 @@ function app() {
 
     this.items = [
         {
-            name: 'Apple iPhone 11',
+            name: 'iPhone 11',
             rom: '128GB',
             ram: '2GB',
             color: 'Black',
             price: 50000,
             imageUrl: 'images/sample-mobile.webp',
-            brand: 'iphone'
+            brand: 'Apple'
         },
         {
             name: 'OnePlus 8T',
@@ -25,25 +25,26 @@ function app() {
             color: 'Green',
             price: 43000,
             imageUrl: 'images/sample-mobile.webp',
-            brand: 'samsung'
+            brand: 'Samsung'
         }
     ]
 
-    this.filters = {}
+    this.filters = {};
+    this.filteredItems = this.items;
 }
 
 app.prototype.render = function () {
-
-    this.items.forEach((item) => {
+    this.listing.innerHTML = "";
+    this.filteredItems.forEach((item) => {
         const { name, rom, ram, color, price, imageUrl, brand } = item;
 
         const template = `<div class="row">
             <div class="mobile-image">
-                <img src="images/sample-mobile.webp"/>
+                <img src="${imageUrl}"/>
             </div>
             <div class="mobile-content">
                 <h3>
-                    ${name} (${rom} ROM, ${ram} RAM, ${color})
+                    ${brand} ${name} (${rom} ROM, ${ram} RAM, ${color})
                 </h3>
                 <h3>
                     INR ${price}
@@ -56,15 +57,31 @@ app.prototype.render = function () {
     })
 }
 
+app.prototype.filterResults = function() {
+    this.filteredItems = this.items.filter((item) => {
+        let show = false;
+        if(this.filters.name && (item.name.toLowerCase().includes(this.filters.name.toLowerCase()) || item.brand.toLowerCase().includes(this.filters.name.toLowerCase()))) {
+            show = true;
+        }
+        if(!show && this.filters.brand && item.brand.toLowerCase().includes(this.filters.brand.toLowerCase())) {
+            show = true;
+        }
+        return show;
+    })
+    this.render();
+}
+
 app.prototype.bindEvents = function () {
-    this.name[0].addEventListener('change', (event) => {
-        this.filters.name = event.target.value
+    this.name[0].addEventListener('input', (event) => {
+        this.filters.name = event.target.value;
+        this.filterResults();
         console.log(this.filters.name);
     });
 
     this.select[0].addEventListener('change', (event) => {
-        this.filters.select = event.target.value
-        console.log(this.filters.select);
+        this.filters.brand = event.target.value
+        this.filterResults();
+        console.log(this.filters.brand);
     });
 
     this.checkboxes.forEach((checkbox) => {
@@ -72,11 +89,10 @@ app.prototype.bindEvents = function () {
             if( !this.filters.checkboxes ) {
                 this.filters.checkboxes = [];
             }
-            this.filters.checkboxes.push(event.target.value)
+            this.filters.checkboxes.push(event.target.value);
             console.log(this.filters.checkboxes);
         })
     });
-
 }
 
 const instance = new app();
